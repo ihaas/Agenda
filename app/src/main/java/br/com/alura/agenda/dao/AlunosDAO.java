@@ -14,20 +14,24 @@ import br.com.alura.agenda.model.Alunos;
 
 public class AlunosDAO extends SQLiteOpenHelper {
     public AlunosDAO(Context context) {
-        super(context, "Agenda", null, 1);
+        super(context, "Agenda", null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE ALUNOS (ID INTEGER PRIMARY KEY, NOME TEXT NOT NULL, ENDERECO TEXT, TELEFONE TEXT, SITE TEXT, NOTA REAL);";
+        String sql = "CREATE TABLE ALUNOS (ID INTEGER PRIMARY KEY, NOME TEXT NOT NULL, ENDERECO TEXT, TELEFONE TEXT, SITE TEXT, NOTA REAL, CAMINHO_FOTO TEXT);";
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS ALUNOS";
-        db.execSQL(sql);
-        onCreate(db);
+        String sql = "";
+        switch (oldVersion) {
+            case 1:
+                sql = "ALTER TABLE ALUNOS ADD COLUMN CAMINHO_FOTO TEXT";
+                db.execSQL(sql);
+
+        }
     }
 
     @NonNull
@@ -38,6 +42,7 @@ public class AlunosDAO extends SQLiteOpenHelper {
         dados.put("TELEFONE", aluno.getTelefone());
         dados.put("SITE", aluno.getSite());
         dados.put("NOTA", aluno.getNota());
+        dados.put("CAMINHO_FOTO", aluno.getCaminhoFoto());
         return dados;
     }
 
@@ -63,6 +68,7 @@ public class AlunosDAO extends SQLiteOpenHelper {
             aluno.setTelefone(c.getString(c.getColumnIndex("TELEFONE")));
             aluno.setSite(c.getString(c.getColumnIndex("SITE")));
             aluno.setNota(c.getDouble(c.getColumnIndex("NOTA")));
+            aluno.setCaminhoFoto(c.getString(c.getColumnIndex("CAMINHO_FOTO")));
 
             listaAlunos.add(aluno);
         }
